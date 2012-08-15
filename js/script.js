@@ -102,13 +102,17 @@ $(function() {
                 y: value.y,
                 radius: value.size
             });
+            var text = value.id;
+            if (value.delegationCount > 0) {
+                text += ': ' + value.delegationCount;
+            }
             $('canvas').drawText({
                 fillStyle: "#000000",
                 strokeWidth: 1,
                 x: value.x,
                 y: value.y,
                 font: "6pt Verdana, sans-serif",
-                text: value.id + ': ' + value.delegationCount
+                text: text
             });
         });
 
