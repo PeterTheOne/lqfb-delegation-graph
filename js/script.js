@@ -23,14 +23,21 @@ $(function() {
                 var member = {
                     id: key,
                     name: val.name,
-                    delegationCount: 0,
+                    delegationCount: function () {
+                        var result = 0;
+                        $.each(this.trusters, function(key, value) {
+                            result += value.delegationCount() + 1;
+                        });
+                        return result;
+                    },
                     delegateCount: 0,
                     size: radius,
                     x: Math.random() * width,
                     y: Math.random() * height,
                     velocityX: 0,
                     velocityY: 0,
-                    removed: false
+                    removed: false,
+                    trusters: new Array()
                 };
                 members[key] = member;
             });
@@ -47,15 +54,18 @@ $(function() {
                         var truster = members[value.truster_id];
                         var trustee = members[value.trustee_id];
 
-                        trustee.delegationCount++;
-                        truster.delegateCount++;
-                        trustee.size += 5;
+                        trustee.trusters.push(truster);
+                        trustee.size = radius;
+
+                        truster.delegateCount = 1;
                     }
                 });
 
-                // remove members that are not trusters or trustees or both
                 $.each(members, function(key, value) {
-                    if (value.delegationCount <= 0 && value.delegateCount <= 0) {
+                    value.size = radius + value.delegationCount() * 5;
+
+                    // remove members that are not trusters or trustees or both
+                    if (value.delegationCount() <= 0 && value.delegateCount <= 0) {
                         value.removed = true;
                     }
                 });
@@ -142,8 +152,8 @@ $(function() {
                 radius: value.size
             });
             var text = value.id;
-            if (value.delegationCount > 0) {
-                text += ': ' + value.delegationCount;
+            if (value.delegationCount() > 0) {
+                text += ': ' + value.delegationCount();
             }
             $('canvas').drawText({
                 fillStyle: "#000000",
@@ -160,11 +170,34 @@ $(function() {
                     typeof members[value.trustee_id] != 'undefined') {
                 var truster = members[value.truster_id];
                 var trustee = members[value.trustee_id];
+                var dX = truster.x - trustee.x;
+                var dY = truster.y - trustee.y;
+                var distance = Math.sqrt(dX * dX + dY * dY);
+                dX = dX / distance;
+                dY = dY / distance;
+
+                var x1 = truster.x - dX * truster.size;
+                var y1 = truster.y - dY * truster.size;
+                var x2 = trustee.x + dX * trustee.size;
+                var y2 = trustee.y + dY * trustee.size;
+                // draw line
                 $('canvas').drawLine({
                     strokeStyle: "#000",
                     strokeWidth: 1,
-                    x1: truster.x, y1: truster.y,
-                    x2: trustee.x, y2: trustee.y
+                    x1: x1,
+                    y1: y1,
+                    x2: x2,
+                    y2: y2
+                });
+                // draw dot on trustee side
+                $('canvas').drawArc({
+                    strokeStyle: "#000",
+                    fillStyle: "#000",
+                    strokeWidth: 1,
+                    x: x2 + dX * 3,
+                    y: y2 + dY * 3,
+                    radius: 3,
+                    closed:true
                 });
             }
         });
