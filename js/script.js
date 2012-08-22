@@ -7,6 +7,7 @@ $(function() {
     var FPS = 60;
     var width = 800;
     var height = 600;
+    var memberLimit = 1000;
 
     var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
 
@@ -23,10 +24,11 @@ $(function() {
         members = [];
         delegations = [];
 
+        baseUrl = $('input#baseUrl').val();
         FPS = parseInt($('input#FPS').val());
         radius = parseInt($('input#radius').val());
         radiusDelegation = parseInt($('input#radiusDelegation').val());
-        baseUrl = $('input#baseUrl').val();
+        memberLimit = parseInt($('input#memberLimit').val());
     }
 
     function gameLoop() {
@@ -45,7 +47,7 @@ $(function() {
     }
 
     function init() {
-        $.getJSON(baseUrl + 'member?limit=100000', function(data) {
+        $.getJSON(baseUrl + 'member?limit=' + memberLimit, function(data) {
             $.each(data.result, function(key, val) {
                 var member = {
                     id: key,
