@@ -18,17 +18,19 @@ $(function() {
     }
 
     function init() {
-        $.getJSON('http://apitest.liquidfeedback.org:25520/member?limit=300', function(data) {
+        $.getJSON('http://apitest.liquidfeedback.org:25520/member?limit=100000', function(data) {
             $.each(data.result, function(key, val) {
                 var member = {
                     id: key,
                     name: val.name,
                     delegationCount: 0,
+                    delegateCount: 0,
                     size: radius,
                     x: Math.random() * width,
                     y: Math.random() * height,
                     velocityX: 0,
-                    velocityY: 0
+                    velocityY: 0,
+                    removed: false
                 };
                 members[key] = member;
             });
@@ -46,7 +48,15 @@ $(function() {
                         var trustee = members[value.trustee_id];
 
                         trustee.delegationCount++;
+                        truster.delegateCount++;
                         trustee.size += 5;
+                    }
+                });
+
+                // remove members that are not trusters or trustees or both
+                $.each(members, function(key, value) {
+                    if (value.delegationCount <= 0 && value.delegateCount <= 0) {
+                        value.removed = true;
                     }
                 });
 
@@ -62,7 +72,13 @@ $(function() {
         });*/
         // seperation
         $.each(members, function(key, value) {
+            if (value.removed) {
+                return;
+            }
             $.each(members, function(key1, value1) {
+                if (value1.removed) {
+                    return;
+                }
                 if (key != key1) {
                     var dX = value.x - value1.x;
                     var dY = value.y - value1.y;
@@ -116,6 +132,9 @@ $(function() {
         $('canvas').clearCanvas();
 
         $.each(members, function(key, value) {
+            if (value.removed) {
+                return;
+            }
             $('canvas').drawArc({
                 strokeStyle: '#000000',
                 x: value.x,
