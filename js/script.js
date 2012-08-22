@@ -1,24 +1,51 @@
 $(function() {
-    var gLoop;
     var members = [];
     var delegations = [];
 
     var radius = 10;
+    var radiusDelegation = 5;
     var FPS = 60;
     var width = 1000;
     var height = 800;
 
+    var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
+
+    $('input#submit').click(function(event) {
+        reset();
+        init();
+    });
+
     init();
 
-    function gameloop() {
-        setInterval(function() {
-            update();
-            draw();
-        }, 1000 / FPS);
+    function reset() {
+        endGameLoop();
+
+        members = [];
+        delegations = [];
+
+        FPS = parseInt($('input#FPS').val());
+        radius = parseInt($('input#radius').val());
+        radiusDelegation = parseInt($('input#radiusDelegation').val());
+        baseUrl = $('input#baseUrl').val();
+    }
+
+    function gameLoop() {
+        update();
+        draw();
+    }
+
+    var intervalId;
+
+    function startGameLoop() {
+        intervalId = setInterval(gameLoop, 1000 / FPS);
+    }
+
+    function endGameLoop() {
+        clearInterval(intervalId);
     }
 
     function init() {
-        $.getJSON('http://apitest.liquidfeedback.org:25520/member?limit=100000', function(data) {
+        $.getJSON(baseUrl + 'member?limit=100000', function(data) {
             $.each(data.result, function(key, val) {
                 var member = {
                     id: key,
@@ -41,7 +68,7 @@ $(function() {
                 };
                 members[key] = member;
             });
-            $.getJSON('http://apitest.liquidfeedback.org:25520/delegation?scope=unit&unit_id=1', function(data) {
+            $.getJSON(baseUrl + 'delegation?scope=unit&unit_id=1', function(data) {
                 $.each(data.result, function(key, value) {
                     var delegation = {
                         truster_id: value.truster_id,
@@ -62,7 +89,7 @@ $(function() {
                 });
 
                 $.each(members, function(key, value) {
-                    value.size = radius + value.delegationCount() * 5;
+                    value.size = radius + value.delegationCount() * radiusDelegation;
 
                     // remove members that are not trusters or trustees or both
                     if (value.delegationCount() <= 0 && value.delegateCount <= 0) {
@@ -70,7 +97,7 @@ $(function() {
                     }
                 });
 
-                gameloop();
+                startGameLoop();
             });
         });
     }
