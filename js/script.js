@@ -4,7 +4,9 @@ $(function() {
     var delegations = [];
 
     var radius = 10;
-    var FPS = 30;
+    var FPS = 60;
+    var width = 1000;
+    var height = 800;
 
     init();
 
@@ -23,8 +25,8 @@ $(function() {
                     name: val.name,
                     delegationCount: 0,
                     size: radius,
-                    x: Math.random() * 600,
-                    y: Math.random() * 600,
+                    x: Math.random() * width,
+                    y: Math.random() * height,
                     velocityX: 0,
                     velocityY: 0
                 };
@@ -46,18 +48,18 @@ $(function() {
                         trustee.delegationCount++;
                         trustee.size += 5;
                     }
-
-                    gameloop();
                 });
+
+                gameloop();
             });
         });
     }
 
     function update() {
-        $.each(members, function(key, value) {
+        /*$.each(members, function(key, value) {
             value.velocityX = 0;
             value.velocityY = 0;
-        });
+        });*/
         // seperation
         $.each(members, function(key, value) {
             $.each(members, function(key1, value1) {
@@ -65,7 +67,11 @@ $(function() {
                     var dX = value.x - value1.x;
                     var dY = value.y - value1.y;
                     var distance = Math.sqrt(dX * dX + dY * dY);
-                    if (distance < (value.size + value1.size) * 1.5) {
+                    if (distance < (value.size + value1.size)) {
+                        // when two circles are on top of each other
+                        value.x += dX * 0.5;
+                        value.y += dY * 0.5;
+                    } else if (distance < (value.size + value1.size) * 1.3) {
                         value.velocityX += dX * 0.1;
                         value.velocityY += dY * 0.1;
                     }
@@ -80,15 +86,29 @@ $(function() {
                 var trustee = members[value.trustee_id];
                 var dX = truster.x - trustee.x;
                 var dY = truster.y - trustee.y;
-                truster.velocityX -= dX * 0.1;
-                truster.velocityY -= dY * 0.1;
-                trustee.velocityX += dX * 0.1;
-                trustee.velocityY += dY * 0.1;
+                var distance = Math.sqrt(dX * dX + dY * dY);
+                if (distance > (truster.size + trustee.size) * 2) {
+                    truster.velocityX -= dX * 0.01;
+                    truster.velocityY -= dY * 0.01;
+                    trustee.velocityX += dX * 0.01;
+                    trustee.velocityY += dY * 0.01;
+                }
             }
         });
         $.each(members, function(key, value) {
+            //damping
+            value.velocityX *= 0.7;
+            value.velocityY *= 0.7;
+
+            // add velocity to position
             value.x += value.velocityX;
             value.y += value.velocityY;
+
+            // clip on world border
+            value.x = value.x < 0 ? 0 : value.x;
+            value.y = value.y < 0 ? 0 : value.y;
+            value.x = value.x > width ? width : value.x;
+            value.y = value.y > height ? height : value.y;
         });
     }
 
