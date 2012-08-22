@@ -5,8 +5,8 @@ $(function() {
     var radius = 10;
     var radiusDelegation = 5;
     var FPS = 60;
-    var width = 1000;
-    var height = 800;
+    var width = 800;
+    var height = 600;
 
     var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
 
