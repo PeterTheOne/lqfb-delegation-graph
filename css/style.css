@@ -2,6 +2,10 @@ div {
     margin: 10px;
 }
 
+h2 {
+    margin-top: 0;
+}
+
 div#settings {
     float: left;
     width: 500px;
