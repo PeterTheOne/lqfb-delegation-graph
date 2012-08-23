@@ -2,20 +2,35 @@ $(function() {
     var members = [];
     var delegations = [];
 
+    var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
+    var apiKey = '';
+    var scope = 'unit';
+    var unitId = '1';
+    var areaId = '';
+    var issueId = '';
+
     var radius = 10;
     var radiusDelegation = 5;
     var FPS = 60;
     var width = 800;
     var height = 600;
     var memberLimit = 1000;
-    var apiKey = '';
-
-    var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
 
     $('input#submit').click(function(event) {
         reset();
         init();
     });
+
+    $('select#scope').change(function() {
+        var tempScope = $('select#scope option:selected').first().val();
+        $('input#unitId').hide();
+        $('input#areaId').hide();
+        $('input#issueId').hide();
+        if (tempScope != 'all') {
+            $('input#' + tempScope + 'Id').show();
+        }
+    });
+
 
     init();
 
@@ -27,6 +42,11 @@ $(function() {
 
         baseUrl = $('input#baseUrl').val();
         apiKey = $('input#apiKey').val();
+        scope = $('select#scope option:selected').first().val();
+        unitId = parseInt($('input#unitId').val());
+        areaId = parseInt($('input#areaId').val());
+        issueId = parseInt($('input#issueId').val());
+
         FPS = parseInt($('input#FPS').val());
         radius = parseInt($('input#radius').val());
         radiusDelegation = parseInt($('input#radiusDelegation').val());
@@ -66,9 +86,18 @@ $(function() {
                         id: key,
                         name: val.name,
                         delegationCount: function () {
+                            return this.calcDelegationCount(this.id, 0);
+                        },
+                        calcDelegationCount: function(id, depth) {
+                            // todo: replace this recursion
+
+                            // break delegation circle
+                            if (depth > 0 && this.id == id) {
+                                return 0;
+                            }
                             var result = 0;
                             $.each(this.trusters, function(key, value) {
-                                result += value.delegationCount() + 1;
+                                result += value.calcDelegationCount(id, depth + 1) + 1;
                             });
                             return result;
                         },
@@ -85,7 +114,16 @@ $(function() {
                 });
 
                 // prepare url
-                var url = baseUrl + 'delegation?scope=unit&unit_id=1';
+                var url = baseUrl + 'delegation';
+                if (scope == 'all') {
+                    // do nothing
+                } else if (scope == 'unit') {
+                    url += '?scope=unit&unit_id=' + unitId;
+                } else if (scope == 'area') {
+                    url += '?scope=area&area_id=' + areaId;
+                } else if (scope == 'issue') {
+                    url += '?scope=issue&issue_id=' + issueId;
+                }
                 if (session_key != '') {
                     url += '&session_key=' + session_key;
                 }
@@ -197,10 +235,10 @@ $(function() {
                 radius: value.size
             });
             var text = '';
-            if (value.name != '') {
-                text = value.name;
-            } else {
+            if (value.name == '' || value.name == null || value.name == 'null') {
                 text = value.id;
+            } else {
+                text = value.name;
             }
             if (value.delegationCount() > 0) {
                 text += ' +' + value.delegationCount();

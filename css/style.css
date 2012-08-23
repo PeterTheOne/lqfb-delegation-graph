@@ -11,6 +11,10 @@ div#settings {
     width: 500px;
 }
 
+#areaId, #issueId {
+    display: none;
+}
+
 div#description {
     float: left;
     width: 500px;
