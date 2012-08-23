@@ -24,10 +24,20 @@
             <h2>Description</h2>
             <p>
                 The lqfb-delegation-graph is an experimental graph view of delegations in
-                <a href="http://liquidfeedback.org/">LiquidFeedback</a>. Every node in the graph is a member of
-                the selected LiquidFeedback instance. The first number shown in each Node is it's ID, the second
-                number is the number of delegations this member has. Members that do not delegate or are no delegates
-                are not shown. The names can only be shown when you provide an API key, but this is not implemented yet.
+                <a href="http://liquidfeedback.org/">LiquidFeedback</a>.
+            </p>
+            <p>
+                Every node in the graph is a member of the selected LiquidFeedback instance.
+                Members that do not delegate or are no delegates are not shown.
+            </p>
+            <p>
+                Names of the members can only be shown when you provide an API key, but this is not implemented yet.
+                Instead you can see the IDs of the members, the second number is the number of delegations this member
+                has.
+            </p>
+            <p>
+                The lines between nodes symbolize the delegation. The delegation is passed in the direction with that
+                the small black dot shows. Additionally the count of delegations is shown by the size of the nodes.
             </p>
         </div>
         <div id="settings">
