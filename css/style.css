@@ -1,0 +1,21 @@
+div {
+    margin: 10px;
+}
+
+div#settings {
+    float: left;
+    width: 500px;
+}
+
+div#description {
+    float: left;
+    width: 500px;
+}
+
+div#canvas {
+    float: left;
+}
+
+canvas {
+    border: 1px solid;
+}

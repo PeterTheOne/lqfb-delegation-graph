@@ -2,34 +2,44 @@
 <html>
     <head>
         <title>lqfb-delegation-graph</title>
-        <style>
-            form {
-                float: left;
-            }
-            canvas {
-                float: left;
-                border: 1px solid;
-            }
-        </style>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="css/style.css" />
         <script src="js/lib/jquery-1.8.0.min.js"></script>
         <script src="js/lib/jcanvas.min.js"></script>
         <script src="js/script.js"></script>
-        <meta charset="utf-8">
     </head>
     <body>
-        <h1>lqfb-delegation-graph</h1>
-        <p>
-            by <a href="http://petergrassberger.com">Peter Grassberger</a>,
-            <a href="https://github.com/PeterTheOne/lqfb-delegation-graph">GitHub</a>
-        </p>
-        <canvas id="canvas" width="800" height="600"></canvas>
-        <form>
-            API BaseUrl: <input id="baseUrl" type="text" name="baseUrl" value="http://apitest.liquidfeedback.org:25520/" size="50" /><br />
-            FPS: <input id="FPS" type="text" name="FPS" value="60" size="50" /><br />
-            Radius: <input id="radius" type="text" name="radius" value="10" size="50" /><br />
-            RadiusDelegation: <input id="radiusDelegation" type="text" name="radiusDelegation" value="5" size="50" /><br />
-            MemberLimit: <input id="memberLimit" type="text" name="memberLimit" value="1000" size="50" /><br />
-            <input id="submit" type="button" name="submit" value="submit" />
-        </form>
+        <header>
+            <h1>lqfb-delegation-graph</h1>
+            <p>
+                by <a href="http://petergrassberger.com">Peter Grassberger</a>,
+                <a href="https://github.com/PeterTheOne/lqfb-delegation-graph">GitHub</a>
+            </p>
+        </header>
+        <div id="canvas">
+            <canvas id="canvas" width="800" height="600"></canvas>
+        </div>
+        <div id="description">
+            <h2>Description</h2>
+            <p>
+                The lqfb-delegation-graph is an experimental graph view of delegations in
+                <a href="http://liquidfeedback.org/">LiquidFeedback</a>. Every node in the graph is a member of
+                the selected LiquidFeedback instance. The first number shown in each Node is it's ID, the second
+                number is the number of delegations this member has. Members that do not delegate or are no delegates
+                are not shown. The names can only be shown when you provide an API key, but this is not implemented yet.
+            </p>
+        </div>
+        <div id="settings">
+            <h2>Settings</h2>
+            <form>
+                API BaseUrl: <input id="baseUrl" type="text" name="baseUrl" value="http://apitest.liquidfeedback.org:25520/" size="50" /><br />
+                FPS: <input id="FPS" type="text" name="FPS" value="60" size="50" /><br />
+                Radius: <input id="radius" type="text" name="radius" value="10" size="50" /><br />
+                RadiusDelegation: <input id="radiusDelegation" type="text" name="radiusDelegation" value="5" size="50" /><br />
+                MemberLimit: <input id="memberLimit" type="text" name="memberLimit" value="1000" size="50" /><br />
+                <input id="submit" type="button" name="submit" value="submit" />
+            </form>
+        </div>
     </body>
 </html>
