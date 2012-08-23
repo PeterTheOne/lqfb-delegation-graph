@@ -8,6 +8,7 @@ $(function() {
     var width = 800;
     var height = 600;
     var memberLimit = 1000;
+    var apiKey = '';
 
     var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
 
@@ -25,6 +26,7 @@ $(function() {
         delegations = [];
 
         baseUrl = $('input#baseUrl').val();
+        apiKey = $('input#apiKey').val();
         FPS = parseInt($('input#FPS').val());
         radius = parseInt($('input#radius').val());
         radiusDelegation = parseInt($('input#radiusDelegation').val());
@@ -47,68 +49,82 @@ $(function() {
     }
 
     function init() {
-        $.getJSON(baseUrl + 'member?limit=' + memberLimit, function(data) {
-            $.each(data.result, function(key, val) {
-                var member = {
-                    id: key,
-                    name: val.name,
-                    delegationCount: function () {
-                        var result = 0;
-                        $.each(this.trusters, function(key, value) {
-                            result += value.delegationCount() + 1;
-                        });
-                        return result;
-                    },
-                    delegateCount: 0,
-                    size: radius,
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    velocityX: 0,
-                    velocityY: 0,
-                    removed: false,
-                    trusters: new Array()
-                };
-                members[key] = member;
-            });
-            $.getJSON(baseUrl + 'delegation?scope=unit&unit_id=1', function(data) {
-                $.each(data.result, function(key, value) {
-                    var delegation = {
-                        truster_id: value.truster_id,
-                        trustee_id: value.trustee_id
+        var session_key = '';
+        $.post(baseUrl + 'session', { key: apiKey }, function(data, msg) {
+            if (msg == 'ok') {
+                session_key = data.session_key;
+            }
+
+            // prepare url
+            var url = baseUrl + 'member?limit=' + memberLimit;
+            if (session_key != '') {
+                url += '&session_key=' + session_key;
+            }
+            $.getJSON(url, function(data) {
+                $.each(data.result, function(key, val) {
+                    var member = {
+                        id: key,
+                        name: val.name,
+                        delegationCount: function () {
+                            var result = 0;
+                            $.each(this.trusters, function(key, value) {
+                                result += value.delegationCount() + 1;
+                            });
+                            return result;
+                        },
+                        delegateCount: 0,
+                        size: radius,
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        velocityX: 0,
+                        velocityY: 0,
+                        removed: false,
+                        trusters: new Array()
                     };
-                    delegations.push(delegation);
-
-                    if (typeof members[value.truster_id] != 'undefined' &&
-                        typeof members[value.trustee_id] != 'undefined') {
-                        var truster = members[value.truster_id];
-                        var trustee = members[value.trustee_id];
-
-                        trustee.trusters.push(truster);
-                        trustee.size = radius;
-
-                        truster.delegateCount = 1;
-                    }
+                    members[key] = member;
                 });
 
-                $.each(members, function(key, value) {
-                    value.size = radius + value.delegationCount() * radiusDelegation;
+                // prepare url
+                var url = baseUrl + 'delegation?scope=unit&unit_id=1';
+                if (session_key != '') {
+                    url += '&session_key=' + session_key;
+                }
+                $.getJSON(url, function(data) {
+                    $.each(data.result, function(key, value) {
+                        var delegation = {
+                            truster_id: value.truster_id,
+                            trustee_id: value.trustee_id
+                        };
+                        delegations.push(delegation);
 
-                    // remove members that are not trusters or trustees or both
-                    if (value.delegationCount() <= 0 && value.delegateCount <= 0) {
-                        value.removed = true;
-                    }
+                        if (typeof members[value.truster_id] != 'undefined' &&
+                            typeof members[value.trustee_id] != 'undefined') {
+                            var truster = members[value.truster_id];
+                            var trustee = members[value.trustee_id];
+
+                            trustee.trusters.push(truster);
+                            trustee.size = radius;
+
+                            truster.delegateCount = 1;
+                        }
+                    });
+
+                    $.each(members, function(key, value) {
+                        value.size = radius + value.delegationCount() * radiusDelegation;
+
+                        // remove members that are not trusters or trustees or both
+                        if (value.delegationCount() <= 0 && value.delegateCount <= 0) {
+                            value.removed = true;
+                        }
+                    });
+
+                    startGameLoop();
                 });
-
-                startGameLoop();
             });
-        });
+        }, "json");
     }
 
     function update() {
-        /*$.each(members, function(key, value) {
-            value.velocityX = 0;
-            value.velocityY = 0;
-        });*/
         // seperation
         $.each(members, function(key, value) {
             if (value.removed) {
@@ -180,9 +196,14 @@ $(function() {
                 y: value.y,
                 radius: value.size
             });
-            var text = value.id;
+            var text = '';
+            if (value.name != '') {
+                text = value.name;
+            } else {
+                text = value.id;
+            }
             if (value.delegationCount() > 0) {
-                text += ': ' + value.delegationCount();
+                text += ' +' + value.delegationCount();
             }
             $('canvas').drawText({
                 fillStyle: "#000000",
