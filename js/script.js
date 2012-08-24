@@ -93,7 +93,7 @@ $(function() {
 
                             // break delegation circle
                             if (depth > 0 && this.id == id) {
-                                return 0;
+                                return -1;
                             }
                             var result = 0;
                             $.each(this.trusters, function(key, value) {
