@@ -261,13 +261,17 @@ $(function() {
                     var dX = value.x - value1.x;
                     var dY = value.y - value1.y;
                     var distance = Math.sqrt(dX * dX + dY * dY);
-                    if (distance < (value.size + value1.size)) {
+                    var dXNormalized = (dX / distance);
+                    var dYNormalized = (dY / distance);
+                    var nonCollisoinDistance = (value.size + value1.size);
+                    /*if (distance < nonCollisoinDistance) {
                         // when two circles are on top of each other
-                        value.x += dX * 0.5;
-                        value.y += dY * 0.5;
-                    } else if (distance < (value.size + value1.size) * 1.3) {
-                        value.velocityX += dX * 0.1;
-                        value.velocityY += dY * 0.1;
+                        value.x += (nonCollisoinDistance - Math.abs(dX)) * dXNormalized * 0.5;
+                        value.y += (nonCollisoinDistance - Math.abs(dY)) * dYNormalized * 0.5;
+                    }*/
+                    if (distance < nonCollisoinDistance * 2.5) {
+                        value.velocityX += (dXNormalized / distance) * 20;
+                        value.velocityY += (dYNormalized / distance) * 20;
                     }
                 }
             });
@@ -281,12 +285,15 @@ $(function() {
                 var dX = truster.x - trustee.x;
                 var dY = truster.y - trustee.y;
                 var distance = Math.sqrt(dX * dX + dY * dY);
-                if (distance > (truster.size + trustee.size) * 2) {
-                    truster.velocityX -= dX * 0.01;
-                    truster.velocityY -= dY * 0.01;
-                    trustee.velocityX += dX * 0.01;
-                    trustee.velocityY += dY * 0.01;
-                }
+                var dXNormalized = (dX / distance);
+                var dYNormalized = (dY / distance);
+                var nonCollisoinDistance = (truster.size + trustee.size);
+                //if (distance > nonCollisoinDistance * 2) {
+                    truster.velocityX -= dX * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dXNormalized;
+                    truster.velocityY -= dY * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dYNormalized;
+                    trustee.velocityX += dX * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dXNormalized;
+                    trustee.velocityY += dY * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dYNormalized;
+                //}
             }
         });
         $.each(members, function(key, value) {
