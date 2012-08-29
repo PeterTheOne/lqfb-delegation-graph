@@ -23,15 +23,25 @@ $(function() {
 
     $('select#scope').change(function() {
         var tempScope = $('select#scope option:selected').first().val();
-        $('input#unitId').hide();
-        $('input#areaId').hide();
-        $('input#issueId').hide();
+        $('select#unit').hide();
+        $('select#area').hide();
+        $('select#issue').hide();
         if (tempScope != 'all') {
-            $('input#' + tempScope + 'Id').show();
+            $('select#' + tempScope).show();
         }
     });
 
+    $('input#baseUrl').change(function() {
+        loadUnitAreaIssue();
+    });
 
+    $('input#apiKey').change(function() {
+        loadUnitAreaIssue();
+    });
+
+
+
+    loadUnitAreaIssue();
     init();
 
     function reset() {
@@ -43,9 +53,9 @@ $(function() {
         baseUrl = $('input#baseUrl').val();
         apiKey = $('input#apiKey').val();
         scope = $('select#scope option:selected').first().val();
-        unitId = parseInt($('input#unitId').val());
-        areaId = parseInt($('input#areaId').val());
-        issueId = parseInt($('input#issueId').val());
+        unitId = parseInt($('select#unit option:selected').first().val());
+        areaId = parseInt($('select#area option:selected').first().val());
+        issueId = parseInt($('select#issue option:selected').first().val());
 
         FPS = parseInt($('input#FPS').val());
         radius = parseInt($('input#radius').val());
@@ -68,7 +78,82 @@ $(function() {
         clearInterval(intervalId);
     }
 
+    function loadUnitAreaIssue() {
+        var session_key = '';
+        $.post(baseUrl + 'session', { key: apiKey }, function(data, msg) {
+            if (msg == 'ok') {
+                session_key = data.session_key;
+            }
+
+            // get unit
+            var url = baseUrl + 'unit?limit=100';
+            if (session_key != '') {
+                url += '&session_key=' + session_key;
+            }
+            $.getJSON(url, function(data) {
+                var options = '';
+                $.each(data.result, function(key, val) {
+                    options += '<option value="' + val.id
+                    if (unitId == val.id) {
+                        options += '" selected>';
+                    } else {
+                        options += '">';
+                    }
+                    options += val.id + ': ' + val.name + '</option>';
+                });
+                $('#unit').html(options);
+            });
+
+            // get area
+            var url = baseUrl + 'area?limit=100';
+            if (session_key != '') {
+                url += '&session_key=' + session_key;
+            }
+            $.getJSON(url, function(data) {
+                var options = '';
+                $.each(data.result, function(key, val) {
+                    options += '<option value="' + val.id
+                    if (areaId == val.id) {
+                        options += '" selected>';
+                    } else {
+                        options += '">';
+                    }
+                    options += val.id + ': ' + val.name + '</option>';
+                });
+                $('#area').html(options);
+            });
+
+            // get issue
+            var url = baseUrl + 'issue?limit=100';
+            if (session_key != '') {
+                url += '&session_key=' + session_key;
+            }
+            $.getJSON(url, function(data) {
+                var options = '';
+                $.each(data.result, function(key, val) {
+                    options += '<option value="' + val.id
+                    if (issueId == val.id) {
+                        options += '" selected>';
+                    } else {
+                        options += '">';
+                    }
+                    options += val.id + '</option>';
+                });
+                $('#issue').html(options);
+            });
+        });
+    }
+
     function init() {
+        $('canvas').drawText({
+            fillStyle: "#000000",
+            strokeWidth: 1,
+            x: width / 2,
+            y: height / 2,
+            font: "30pt Verdana, sans-serif",
+            text: 'Loading...'
+        });
+
         var session_key = '';
         $.post(baseUrl + 'session', { key: apiKey }, function(data, msg) {
             if (msg == 'ok') {

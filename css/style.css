@@ -11,7 +11,7 @@ div#settings {
     width: 500px;
 }
 
-#areaId, #issueId {
+#area, #issue {
     display: none;
 }
 
