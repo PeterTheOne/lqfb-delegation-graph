@@ -200,10 +200,11 @@ $(function() {
                         y: Math.random() * height,
                         velocityX: 0,
                         velocityY: 0,
-                        removed: false,
                         trusters: new Array()
                     };
-                    members[val.id] = member;
+                    if (val.removed != true && val.locked != true) {
+                        members[val.id] = member;
+                    }
                 });
 
                 // prepare url
@@ -226,10 +227,10 @@ $(function() {
                             truster_id: value.truster_id,
                             trustee_id: value.trustee_id
                         };
-                        delegations.push(delegation);
 
-                        if (typeof members[value.truster_id] != 'undefined' &&
-                            typeof members[value.trustee_id] != 'undefined') {
+                        if (typeof members[value.truster_id] !== 'undefined' &&
+                            typeof members[value.trustee_id] !== 'undefined') {
+
                             var truster = members[value.truster_id];
                             var trustee = members[value.trustee_id];
 
@@ -237,6 +238,8 @@ $(function() {
                             trustee.size = radius;
 
                             truster.delegateCount = 1;
+
+                            delegations.push(delegation);
                         }
                     });
 
@@ -248,7 +251,7 @@ $(function() {
 
                         // remove members that are not trusters or trustees or both
                         if (value.delegationCount() <= 0 && value.delegateCount <= 0) {
-                            value.removed = true;
+                            delete members[key];
                         }
                     });
 
@@ -261,11 +264,11 @@ $(function() {
     function update() {
         // seperation
         $.each(members, function(key, value) {
-            if (typeof value === "undefined" || value.removed) {
+            if (typeof value === "undefined") {
                 return;
             }
             $.each(members, function(key1, value1) {
-                if (typeof value1 === "undefined" || value1.removed) {
+                if (typeof value1 === "undefined") {
                     return;
                 }
                 if (key != key1) {
@@ -308,7 +311,7 @@ $(function() {
             }
         });
         $.each(members, function(key, value) {
-            if (typeof value === "undefined" || value.removed) {
+            if (typeof value === "undefined") {
                 return;
             }
 
@@ -332,7 +335,7 @@ $(function() {
         $('canvas').clearCanvas();
 
         $.each(members, function(key, value) {
-            if (typeof value === "undefined" || value.removed) {
+            if (typeof value === "undefined") {
                 return;
             }
             $('canvas').drawArc({
