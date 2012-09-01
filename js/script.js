@@ -2,6 +2,10 @@ $(function() {
     var members = [];
     var delegations = [];
 
+    var units = [];
+    var areas = [];
+    var issues = [];
+
     var baseUrl = 'http://apitest.liquidfeedback.org:25520/';
     var apiKey = '';
     var scope = 'unit';
@@ -41,6 +45,7 @@ $(function() {
         loadUnitAreaIssue();
     });
 
+    loadUnitAreaIssue();
     init();
 
     function reset() {
@@ -92,6 +97,7 @@ $(function() {
             $.getJSON(url, function(data) {
                 var options = '';
                 $.each(data.result, function(key, val) {
+                    units[val.id] = val;
                     options += '<option value="' + val.id
                     if (unitId == val.id) {
                         options += '" selected>';
@@ -111,12 +117,14 @@ $(function() {
             $.getJSON(url, function(data) {
                 var options = '';
                 $.each(data.result, function(key, val) {
+                    areas[val.id] = val;
                     options += '<option value="' + val.id
                     if (areaId == val.id) {
                         options += '" selected>';
                     } else {
                         options += '">';
                     }
+                    options += units[val.unit_id].name + ' ----> ';
                     options += val.id + ': ' + val.name + '</option>';
                 });
                 $('#area').html(options);
@@ -130,12 +138,15 @@ $(function() {
             $.getJSON(url, function(data) {
                 var options = '';
                 $.each(data.result, function(key, val) {
+                    issues[val.id] = val;
                     options += '<option value="' + val.id
                     if (issueId == val.id) {
                         options += '" selected>';
                     } else {
                         options += '">';
                     }
+                    options += units[areas[val.area_id].unit_id].name + ' ----> ';
+                    options += areas[val.area_id].id + ': ' + areas[val.area_id].name + ' ----> ';
                     options += val.id + '</option>';
                 });
                 $('#issue').html(options);
