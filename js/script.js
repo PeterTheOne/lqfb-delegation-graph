@@ -41,9 +41,6 @@ $(function() {
         loadUnitAreaIssue();
     });
 
-
-
-    loadUnitAreaIssue();
     init();
 
     function reset() {
@@ -168,7 +165,7 @@ $(function() {
             $.getJSON(url, function(data) {
                 $.each(data.result, function(key, val) {
                     var member = {
-                        id: key,
+                        id: val.id,
                         name: val.name,
                         delegationCount: function () {
                             return this.calcDelegationCount(this.id, 0);
@@ -195,7 +192,7 @@ $(function() {
                         removed: false,
                         trusters: new Array()
                     };
-                    members[key] = member;
+                    members[val.id] = member;
                 });
 
                 // prepare url
@@ -233,6 +230,9 @@ $(function() {
                     });
 
                     $.each(members, function(key, value) {
+                        if (typeof value === "undefined") {
+                            return;
+                        }
                         value.size = radius + value.delegationCount() * radiusDelegation;
 
                         // remove members that are not trusters or trustees or both
@@ -250,11 +250,11 @@ $(function() {
     function update() {
         // seperation
         $.each(members, function(key, value) {
-            if (value.removed) {
+            if (typeof value === "undefined" || value.removed) {
                 return;
             }
             $.each(members, function(key1, value1) {
-                if (value1.removed) {
+                if (typeof value1 === "undefined" || value1.removed) {
                     return;
                 }
                 if (key != key1) {
@@ -297,6 +297,10 @@ $(function() {
             }
         });
         $.each(members, function(key, value) {
+            if (typeof value === "undefined" || value.removed) {
+                return;
+            }
+
             //damping
             value.velocityX *= 0.7;
             value.velocityY *= 0.7;
@@ -317,7 +321,7 @@ $(function() {
         $('canvas').clearCanvas();
 
         $.each(members, function(key, value) {
-            if (value.removed) {
+            if (typeof value === "undefined" || value.removed) {
                 return;
             }
             $('canvas').drawArc({
