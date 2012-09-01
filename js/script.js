@@ -32,10 +32,12 @@ $(function() {
     });
 
     $('input#baseUrl').change(function() {
+        reset();
         loadUnitAreaIssue();
     });
 
     $('input#apiKey').change(function() {
+        reset();
         loadUnitAreaIssue();
     });
 
@@ -156,13 +158,11 @@ $(function() {
 
         var session_key = '';
         $.post(baseUrl + 'session', { key: apiKey }, function(data, msg) {
-            if (msg == 'ok') {
-                session_key = data.session_key;
-            }
+            session_key = data.session_key;
 
             // prepare url
             var url = baseUrl + 'member?limit=' + memberLimit;
-            if (session_key != '') {
+            if (typeof session_key !== "undefined") {
                 url += '&session_key=' + session_key;
             }
             $.getJSON(url, function(data) {
@@ -209,7 +209,7 @@ $(function() {
                 } else if (scope == 'issue') {
                     url += '?scope=issue&issue_id=' + issueId;
                 }
-                if (session_key != '') {
+                if (typeof session_key !== "undefined") {
                     url += '&session_key=' + session_key;
                 }
                 $.getJSON(url, function(data) {
