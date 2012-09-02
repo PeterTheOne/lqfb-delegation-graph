@@ -54,17 +54,17 @@ $(function() {
         members = [];
         delegations = [];
 
-        baseUrl = $('input#baseUrl').val();
-        apiKey = $('input#apiKey').val();
+        baseUrl = $.trim($('input#baseUrl').val());
+        apiKey = $.trim($('input#apiKey').val());
         scope = $('select#scope option:selected').first().val();
-        unitId = parseInt($('select#unit option:selected').first().val());
-        areaId = parseInt($('select#area option:selected').first().val());
-        issueId = parseInt($('select#issue option:selected').first().val());
+        unitId = parseInt($.trim($('select#unit option:selected').first().val()));
+        areaId = parseInt($.trim($('select#area option:selected').first().val()));
+        issueId = parseInt($.trim($('select#issue option:selected').first().val()));
 
-        FPS = parseInt($('input#FPS').val());
-        radius = parseInt($('input#radius').val());
-        radiusDelegation = parseInt($('input#radiusDelegation').val());
-        memberLimit = parseInt($('input#memberLimit').val());
+        FPS = parseInt($.trim($('input#FPS').val()));
+        radius = parseInt($.trim($('input#radius').val()));
+        radiusDelegation = parseInt($.trim($('input#radiusDelegation').val()));
+        memberLimit = parseInt($.trim($('input#memberLimit').val()));
     }
 
     function gameLoop() {
