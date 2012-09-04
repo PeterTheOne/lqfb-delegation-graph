@@ -254,6 +254,18 @@ $(function() {
                             delete members[key];
                         }
                     });
+                    
+                    var url = baseUrl + 'member_image?type=avatar';
+                    if (typeof session_key !== "undefined") {
+                       url += '&session_key=' + session_key;
+                    }
+                    $.getJSON(url, function(data) {
+                        $.each(data.result, function(key, value) {
+                          if (members[value.member_id]) {
+                            members[value.member_id].image_src = 'data:image/jpg;base64,' + value.data.replace(/\n/g,"")
+                          }
+                        })
+                    })
 
                     startGameLoop();
                 });
@@ -308,7 +320,7 @@ $(function() {
                     trustee.velocityX += dX * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dXNormalized;
                     trustee.velocityY += dY * 0.0001 * distance + nonCollisoinDistance * 0.01 * -dYNormalized;
                 //}
-            }
+           } 
         });
         $.each(members, function(key, value) {
             if (typeof value === "undefined") {
@@ -353,14 +365,17 @@ $(function() {
             if (value.delegationCount() > 0) {
                 text += ' +' + value.delegationCount();
             }
+            $('canvas').drawImage({ source: value.image_src, x: value.x, y: value.y, scale: 0.5 });
+
             $('canvas').drawText({
                 fillStyle: "#000000",
                 strokeWidth: 1,
                 x: value.x,
-                y: value.y,
+                y: value.y + 18,
                 font: "6pt Verdana, sans-serif",
                 text: text
             });
+
         });
 
         $.each(delegations, function(key, value) {
