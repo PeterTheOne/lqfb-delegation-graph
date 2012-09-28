@@ -1,9 +1,5 @@
 (function($){
 
-    Backbone.sync = function(method, model, success, error) {
-        success();
-    }
-
     var Member = Backbone.Model.extend({
         defaults: {
             name: 'default-name'
@@ -11,7 +7,15 @@
     });
 
     var MemberList = Backbone.Collection.extend({
-        model: Member
+        model: Member,
+
+        url: function() {
+            return 'http://apitest.liquidfeedback.org:25520/member';
+        },
+
+        parse: function(resp, xhr) {
+            return resp.result;
+        }
     });
 
     var MemberView = Backbone.View.extend({
@@ -46,11 +50,13 @@
         el: $('body'),
 
         events: {
-            'click button#add': 'addMember'
+            'click input#submit': 'loadResults'
         },
 
         initialize: function() {
-            _.bindAll(this, 'render', 'addMember', 'appendItem');
+            _.bindAll(this, 'render', 'loadResults', 'appendItem');
+
+            this.isLoading = false;
 
             this.collection = new MemberList();
             this.collection.bind('add', this.appendItem);
@@ -62,20 +68,32 @@
         render: function() {
             var self = this;
 
-            $(this.el).append("<button id='add'>Add list item</button>");
-            $(this.el).append("<ul></ul>");
+            this.loadResults();
+
+            //$(this.el).append("<button id='add'>Add list item</button>");
+            //$(this.el).append("<ul></ul>");
             _(this.collection.models).each(function(item) {
                 self.appendItem(item);
             }, this);
         },
 
-        addMember: function() {
-            this.counter++;
-            var member = new Member();
-            member.set({
-                part2: member.get('part2') + this.counter
+        loadResults: function() {
+            var self = this;
+
+            this.isLoading = true;
+
+            this.collection.fetch({
+                success: function(members) {
+                    members.each(function(memberData) {
+                        var member = new Member();
+                        member.set({
+                            name: memberData.get('name')
+                        });
+                        self.collection.add(member);
+                    });
+                    this.isLoading = false;
+                }
             });
-            this.collection.add(member);
         },
 
         appendItem: function(item) {
