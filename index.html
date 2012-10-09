@@ -1,19 +1,12 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/html">
     <head>
-        <title>lqfb-delegation-graph</title>
         <meta charset="utf-8">
+        <title>lqfb-delegation-graph</title>
 
         <link rel="stylesheet" href="css/style.css" />
-
-        <script src="js/lib/jquery-1.8.0.min.js"></script>
-        <script src="js/lib/json2.js"></script>
-        <script src="js/lib/underscore-min.js"></script>
-        <script src="js/lib/backbone.js"></script>
-        <script src="js/lib/jcanvas.min.js"></script>
     </head>
     <body>
-        <script src="js/script.js"></script>
         <header>
             <h1>lqfb-delegation-graph</h1>
             <p>
@@ -74,5 +67,29 @@
                 <input id="submit" type="button" name="submit" value="submit" />
             </form>
         </div>
+
+        <!-- Third-Party Libraries development -->
+        <script src="js/lib/jquery-1.8.2.js"></script>
+        <script src="js/lib/underscore.js"></script>
+        <script src="js/lib/backbone.js"></script>
+
+        <!-- Third-Party Libraries production -->
+        <!--<script src="js/lib/jquery-1.8.2.min.js"></script>
+        <script src="js/lib/underscore.min.js"></script>
+        <script src="js/lib/backbone.min.js"></script>-->
+
+        <!-- Model -->
+        <script src="js/model/member.js"></script>
+
+        <!-- Collection -->
+        <script src="js/collection/memberList.js"></script>
+
+        <!-- View -->
+        <script src="js/view/memberView.js"></script>
+        <script src="js/view/memberListView.js"></script>
+
+        <!-- Application Core -->
+        <script src="js/application.js"></script>
+        <script src="js/router.js"></script>
     </body>
 </html>
