@@ -40,7 +40,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 },
                 'json'
             );
-            $.ajaxSetup({async: true});
+            //$.ajaxSetup({async: true});
         }
     },
 
@@ -53,9 +53,21 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
 
         this.memberList.fetch({
             data: {
-                'session_key': this.sessionKey
+                'session_key': this.sessionKey,
+                'limit': 1000
             }
         });
+
+        this.delegationList = new DelegationList();
+        this.delegationList.url = this.baseUrl + '/delegation';
+        this.delegationList.fetch({
+            data: {
+                'session_key': this.sessionKey,
+                'limit': 1000
+            }
+        });
+
+        //todo: fetch delegations
     },
 
     start: function() {
