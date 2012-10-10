@@ -27,9 +27,50 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.sessionKey = null;
         this.scope = scope;
         this.scopeId = scopeId;
+        this.unitId = null;
+        this.areaId = null;
+        this.issueId = null;
         this.sessionKey = null;
 
         this.fetchSessionKey(apiKey);
+
+        if (this.scope == 'unit') {
+            this.unitId = scopeId;
+        } else if (this.scope == 'area') {
+            this.area = new Area();
+            this.area.url = this.baseUrl + '/area';
+            this.area.fetch({
+                data: {
+                    'session_key': this.sessionKey,
+                    'area_id': scopeId
+                },
+                async: false
+            });
+            this.unitId = this.area.get('unit_id');
+            this.areaId = scopeId;
+        } else {
+            this.issue = new Issue();
+            this.issue.url = this.baseUrl + '/issue';
+            this.issue.fetch({
+                data: {
+                    'session_key': this.sessionKey,
+                    'issue_id': scopeId
+                },
+                async: false
+            });
+            this.area = new Area();
+            this.area.url = this.baseUrl + '/area';
+            this.area.fetch({
+                data: {
+                    'session_key': this.sessionKey,
+                    'area_id': this.issue.get('area_id')
+                },
+                async: false
+            });
+            this.unitId = this.area.get('unit_id');
+            this.areaId = this.issue.get('area_id');
+            this.issueId = scopeId;
+        }
 
         this.memberList = new MemberList();
         this.memberList.url = this.baseUrl + '/member';
@@ -69,8 +110,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 'session_key': this.sessionKey,
                 'limit': 1000,
                 'scope': 'unit',
-                //todo: make dynamic
-                'unit_id': '1'
+                'unit_id': this.unitId
             },
             async: false
         });
@@ -81,8 +121,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                     'session_key': this.sessionKey,
                     'limit': 1000,
                     'scope': 'area',
-                    //todo: make dynamic
-                    'area_id': '1'
+                    'area_id': this.areaId
                 },
                 async: false
             });
@@ -94,8 +133,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                     'session_key': this.sessionKey,
                     'limit': 1000,
                     'scope': 'issue',
-                    //todo: make dynamic
-                    'issue_id': '1'
+                    'issue_id': this.issueId
                 },
                 async: false
             });
@@ -152,7 +190,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
             }
         }, this);
 
-
+        //todo: fix remove
         /*var list = this.memberList;
         var i = 0;
         this.memberList.forEach(function(member) {
