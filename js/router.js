@@ -53,14 +53,14 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListArea = new DelegationList();
         this.delegationListArea.url = this.baseUrl + '/delegation';
         this.delegationListAreaView = new DelegationListView({
-            collection: this.delegationListUnit,
+            collection: this.delegationListArea,
             'memberList': this.memberList
         });
 
         this.delegationListIssue = new DelegationList();
         this.delegationListIssue.url = this.baseUrl + '/delegation';
         this.delegationListIssueView = new DelegationListView({
-            collection: this.delegationListUnit,
+            collection: this.delegationListIssue,
             'memberList': this.memberList
         });
 
@@ -109,7 +109,9 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
-                truster.set({'delegateCount': 1});
+                truster.set({delegateCount: 1});
+                truster.set({hasDelegation: true});
+                trustee.set({hasDelegation: true});
 
                 var trusters = trustee.get('trusters');
                 trusters.push(truster);
@@ -124,7 +126,9 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
-                truster.set({'delegateCount': 1});
+                truster.set({delegateCount: 1});
+                truster.set({hasDelegation: true});
+                trustee.set({hasDelegation: true});
 
                 var trusters = trustee.get('trusters');
                 trusters.push(truster);
@@ -139,9 +143,9 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
-                truster.set({'delegateCount': 1});
-                truster.set({'hasDelegation': true});
-                trustee.set({'hasDelegation': true});
+                truster.set({delegateCount: 1});
+                truster.set({hasDelegation: true});
+                trustee.set({hasDelegation: true});
 
                 var trusters = trustee.get('trusters');
                 trusters.push(truster);
@@ -149,7 +153,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         }, this);
 
 
-        var list = this.memberList;
+        /*var list = this.memberList;
         var i = 0;
         this.memberList.forEach(function(member) {
             //if (member.get('delegateCount') <= 0 && member.delegationCount() <= 0) {
@@ -158,7 +162,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 console.log('remove');
                 list.remove(member);
             }
-        });
+        });*/
 
         this.memberListView.render();
         this.delegationListUnitView.render();

@@ -11,6 +11,10 @@ window.MemberView = Backbone.View.extend({
         //this.$el.html(this.template(this.model.toJSON()));
         //return this;
 
+        if (!this.model.get('hasDelegation')) {
+            return;
+        }
+
         // draw arc
         $('canvas').drawArc({
             strokeStyle: '#000000',
