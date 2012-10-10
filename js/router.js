@@ -39,27 +39,73 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
             data: {
                 'session_key': this.sessionKey,
                 'limit': 1000
-            }
+            },
+            async: false
         });
 
-        this.delegationList = new DelegationList();
-        this.delegationList.url = this.baseUrl + '/delegation';
-        this.delegationListView = new DelegationListView({
-            collection: this.delegationList,
+        this.delegationListUnit = new DelegationList();
+        this.delegationListUnit.url = this.baseUrl + '/delegation';
+        this.delegationListUnitView = new DelegationListView({
+            collection: this.delegationListUnit,
             'memberList': this.memberList
         });
 
-        this.delegationList.fetch({
-            data: {
-                'session_key': this.sessionKey,
-                'limit': 1000
-            }
+        this.delegationListArea = new DelegationList();
+        this.delegationListArea.url = this.baseUrl + '/delegation';
+        this.delegationListAreaView = new DelegationListView({
+            collection: this.delegationListUnit,
+            'memberList': this.memberList
         });
 
-        this.delegationList.forEach(function(delegation) {
+        this.delegationListIssue = new DelegationList();
+        this.delegationListIssue.url = this.baseUrl + '/delegation';
+        this.delegationListIssueView = new DelegationListView({
+            collection: this.delegationListUnit,
+            'memberList': this.memberList
+        });
+
+        this.delegationListUnit.fetch({
+            data: {
+                'session_key': this.sessionKey,
+                'limit': 1000,
+                'scope': 'unit',
+                //todo: make dynamic
+                'unit_id': '1'
+            },
+            async: false
+        });
+
+        if (this.scope == 'area' || this.scope == 'issue') {
+            this.delegationListArea.fetch({
+                data: {
+                    'session_key': this.sessionKey,
+                    'limit': 1000,
+                    'scope': 'area',
+                    //todo: make dynamic
+                    'area_id': '1'
+                },
+                async: false
+            });
+        }
+
+        if (this.scope == 'issue') {
+            this.delegationListIssue.fetch({
+                data: {
+                    'session_key': this.sessionKey,
+                    'limit': 1000,
+                    'scope': 'issue',
+                    //todo: make dynamic
+                    'issue_id': '1'
+                },
+                async: false
+            });
+        }
+
+        // issue
+        this.delegationListIssue.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (truster && trustee) {
+            if (truster && trustee && truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
@@ -68,19 +114,56 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
                 var trusters = trustee.get('trusters');
                 trusters.push(truster);
             }
+        }, this);
 
+        // area
+        this.delegationListArea.forEach(function(delegation) {
+            var truster = this.memberList.get(delegation.get('truster_id'));
+            var trustee = this.memberList.get(delegation.get('trustee_id'));
+            if (truster && trustee && truster.get('delegateCount') <= 0) {
+                delegation.set({truster: truster});
+                delegation.set({trustee: trustee});
+
+                truster.set({'delegateCount': 1});
+
+                var trusters = trustee.get('trusters');
+                trusters.push(truster);
+            }
+        }, this);
+
+        // unit
+        this.delegationListUnit.forEach(function(delegation) {
+            var truster = this.memberList.get(delegation.get('truster_id'));
+            var trustee = this.memberList.get(delegation.get('trustee_id'));
+            if (truster && trustee && truster.get('delegateCount') <= 0) {
+                delegation.set({truster: truster});
+                delegation.set({trustee: trustee});
+
+                truster.set({'delegateCount': 1});
+                truster.set({'hasDelegation': true});
+                trustee.set({'hasDelegation': true});
+
+                var trusters = trustee.get('trusters');
+                trusters.push(truster);
+            }
         }, this);
 
 
         var list = this.memberList;
+        var i = 0;
         this.memberList.forEach(function(member) {
-            if (member.get('delegateCount') <= 0 && member.get('delegationCount') <= 0) {
+            //if (member.get('delegateCount') <= 0 && member.delegationCount() <= 0) {
+            console.log('i: ' + i++ + ', name: ' + member.get('name') + ', hasDelegation: ' + member.get('hasDelegation'));
+            if (!member.get('hasDelegation')) {
+                console.log('remove');
                 list.remove(member);
             }
         });
 
         this.memberListView.render();
-        this.delegationListView.render();
+        this.delegationListUnitView.render();
+        this.delegationListAreaView.render();
+        this.delegationListIssueView.render();
         //$('#canvas').html(this.memberListView.el);
     },
 
