@@ -14,55 +14,8 @@
                 <a href="https://github.com/PeterTheOne/lqfb-delegation-graph">GitHub</a>
             </p>
         </header>
-        <div id="canvas">
-            <canvas id="canvas" width="800" height="600"></canvas>
-        </div>
-        <div id="description">
-            <h2>Description</h2>
-            <p>
-                The lqfb-delegation-graph is an experimental graph view of delegations in
-                <a href="http://liquidfeedback.org/">LiquidFeedback</a>.
-            </p>
-            <p>
-                Every node in the graph is a member of the selected LiquidFeedback instance.
-                Members that do not delegate or are no delegates are not shown.
-            </p>
-            <p>
-                Names of the members can only be shown when you provide an API key. Instead you can see the IDs of
-                the members, the second number is the number of delegations this member has.
-            </p>
-            <p>
-                The lines between nodes symbolize the delegation. The delegation is passed in the direction with that
-                the small black dot shows. Additionally the count of delegations is shown by the size of the nodes.
-            </p>
-            <p>
-                Nodes try to separate but nodes that are connected attract each other. Still they sometimes end up
-                intertwined.
-            </p>
-        </div>
-        <div id="settings">
-            <h2>Settings</h2>
-            <form>
-                <!--API BaseUrl: <input id="baseUrl" type="text" name="baseUrl" value="http://apitest.liquidfeedback.org:25520/" size="50" /><br />
-                API Key: <input id="apiKey" type="text" name="apiKey" value="" size="50" /><br />
-                Scope:
-                <select id="scope" name="scope">-->
-                    <!--<option value="all">All</option>-->
-                    <!--<option value="unit" selected>Unit</option>
-                    <option value="area">Area</option>
-                    <option value="issue">Issue</option>
-                </select>
-                <select id="unit" name="unit" /></select>
-                <select id="area" name="area" /></select>
-                <select id="issue" name="issue" /></select>
-                <br />
-                <br />
-                FPS: <input id="FPS" type="text" name="FPS" value="60" size="50" /><br />
-                Radius: <input id="radius" type="text" name="radius" value="10" size="50" /><br />
-                RadiusDelegation: <input id="radiusDelegation" type="text" name="radiusDelegation" value="5" size="50" /><br />
-                MemberLimit: <input id="memberLimit" type="text" name="memberLimit" value="1000" size="50" /><br />-->
-                <input id="submit" type="button" name="submit" value="submit" />
-            </form>
+        <div id="content">
+
         </div>
 
         <!-- Third-Party Libraries development -->

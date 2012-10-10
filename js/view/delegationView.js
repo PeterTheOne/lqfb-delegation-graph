@@ -18,11 +18,19 @@ window.DelegationView = Backbone.View.extend({
             var x2 = trustee.get('x') + dX * trustee.get('size');
             var y2 = trustee.get('y') + dY * trustee.get('size');
 
-            console.log('drawLine: ' + x1);
+            // select color
+            var color = '#000000';
+            if (this.model.get('scope') == 'unit') {
+                color = '#0000ff';
+            } else if (this.model.get('scope') == 'area') {
+                color = '#ff0000';
+            } else {
+                color = '#00ff00';
+            }
 
             // draw line
             $('canvas').drawLine({
-                strokeStyle: "#000",
+                strokeStyle: color,
                 strokeWidth: 1,
                 x1: x1,
                 y1: y1,
@@ -32,8 +40,8 @@ window.DelegationView = Backbone.View.extend({
 
             // draw dot on trustee side
             $('canvas').drawArc({
-                strokeStyle: "#000",
-                fillStyle: "#000",
+                strokeStyle: color,
+                fillStyle: color,
                 strokeWidth: 1,
                 x: x2 + dX * 3,
                 y: y2 + dY * 3,

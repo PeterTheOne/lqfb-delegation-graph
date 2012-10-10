@@ -1,50 +1,36 @@
 window.lqfbDelegationGraph = new (Backbone.Router.extend({
     routes: {
-        '': 'index'
+        '': 'selectInstance',
+        'selectScope/:baseUrl/:apiKey': 'selectScope',
+        'graphView/:baseUrl/:apiKey/:scope/:scopeId': 'graphView'
     },
 
     initialize: function() {
-        this.baseUrl = 'http://apitest.liquidfeedback.org:25520';
-        this.apiKey = null;
-        this.sessionKey = null;
 
-        var parameterUrl = getURLParameter('baseUrl');
-        var apiKey = getURLParameter('apiKey');
-        if (parameterUrl && apiKey) {
-            this.baseUrl = parameterUrl;
-            this.apiKey = apiKey;
-        }
-
-        if (this.apiKey) {
-            /*var session = new Session();
-            session.url = this.baseUrl + '/session';
-            session.fetch({
-                key: this.apiKey,
-
-                success: function() {
-                    console.log(this.get('session_key'));
-                }
-            });*/
-
-            var self = this;
-            $.ajaxSetup({async: false});
-            $.post(
-                this.baseUrl + '/session',
-                {
-                    key: this.apiKey
-                },
-                function(data, msg) {
-                    if (msg == 'success') {
-                        self.sessionKey = data.session_key;
-                    }
-                },
-                'json'
-            );
-            //$.ajaxSetup({async: true});
-        }
     },
 
-    index: function() {
+    selectInstance: function() {
+        $('#content').html('<a href="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/9QPQjHjW4dcd23rSbN66">lqfb ppoe</a>');
+    },
+
+    selectScope: function(baseUrl, apiKey) {
+        $('#content').html('<a href="#graphView/' + baseUrl + '/' + apiKey + '/' + 'unit' + '/' + '1' + '">unit 1</a>');
+    },
+
+    graphView: function(baseUrl, apiKey, scope, scopeId) {
+        $.get('template/canvas.html', function(template) {
+            $('#content').html(template);
+        });
+
+
+        this.baseUrl = stripTrailingSlash(decodeURIComponent(baseUrl));
+        this.sessionKey = null;
+        this.scope = scope;
+        this.scopeId = scopeId;
+        this.sessionKey = null;
+
+        this.fetchSessionKey(apiKey);
+
         this.memberList = new MemberList();
         this.memberList.url = this.baseUrl + '/member';
         this.memberListView = new MemberListView({collection: this.memberList});
@@ -100,6 +86,30 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
 
     start: function() {
         //todo: {pushState: true} ? (htaccess)?
-        Backbone.history.start();
+        Backbone.history.start({
+            root: '/lqfb-delegation-graph'
+        });
+    },
+
+    fetchSessionKey: function(apiKey) {
+        var self = this;
+        $.ajaxSetup({async: false});
+        $.post(
+            this.baseUrl + '/session',
+            {
+                key: apiKey
+            },
+            function(data, msg) {
+                if (msg == 'success') {
+                    self.setSessionKey(data.session_key);
+                }
+            },
+            'json'
+        );
+        //$.ajaxSetup({async: true});
+    },
+
+    setSessionKey: function(sessionKey) {
+        this.sessionKey = sessionKey;
     }
 }));

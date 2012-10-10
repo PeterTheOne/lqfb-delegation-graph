@@ -22,6 +22,8 @@ div#description {
 
 div#canvas {
     float: left;
+    width: 800px;
+    height: 600px;
 }
 
 canvas {
