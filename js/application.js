@@ -1,4 +1,21 @@
 $(function(){
+
+    /*function gameLoop() {
+        //update();
+        //draw();
+    }
+
+    var intervalId;
+
+    function startGameLoop() {
+        intervalId = setInterval(gameLoop, 1000 / FPS);
+    }
+
+    function endGameLoop() {
+        clearInterval(intervalId);
+    }*/
+
+
     lqfbDelegationGraph.start();
 });
 
@@ -11,4 +28,3 @@ function getURLParameter(name) {
     }
     return null;
 }
-

@@ -48,8 +48,6 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.memberList = new MemberList();
         this.memberList.url = this.baseUrl + '/member';
         this.memberListView = new MemberListView({collection: this.memberList});
-        this.memberListView.render();
-        $('#canvas').html(this.memberListView.el);
 
         this.memberList.fetch({
             data: {
@@ -67,7 +65,29 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
             }
         });
 
-        //todo: fetch delegations
+        this.delegationList.forEach(function(delegation) {
+            var truster = this.memberList.get(delegation.get('truster_id'));
+            var trustee = this.memberList.get(delegation.get('trustee_id'));
+
+            if (truster && trustee) {
+                truster.set({'delegateCount': 1});
+
+                var trusters = trustee.get('trusters');
+                trusters.push(truster);
+            }
+
+        }, this);
+
+
+        var list = this.memberList;
+        this.memberList.forEach(function(member) {
+            if (member.get('delegateCount') < 1 || member.get('delegationCount') < 1) {
+                list.remove(member);
+            }
+        });
+
+        this.memberListView.render();
+        //$('#canvas').html(this.memberListView.el);
     },
 
     start: function() {

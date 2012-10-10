@@ -2,11 +2,13 @@ window.MemberListView = Backbone.View.extend({
     tagName: 'ul',
 
     initialize: function() {
-        this.collection.on('add', this.addOne, this);
-        this.collection.on('reset', this.addAll, this);
+        //this.collection.on('add', this.addOne, this);
+        //this.collection.on('reset', this.addAll, this);
     },
 
     render: function() {
+        //$('canvas').clearCanvas();
+
         this.addAll();
         return this;
     },
@@ -18,6 +20,6 @@ window.MemberListView = Backbone.View.extend({
 
     addOne: function(member) {
         var memberView = new MemberView({model: member});
-        this.$el.append(memberView.render().el);
+        memberView.render();
     }
 });
