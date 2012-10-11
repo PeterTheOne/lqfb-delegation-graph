@@ -6,6 +6,8 @@ window.Member = Backbone.Model.extend({
             //todo: make width and height setable
             x: Math.random() * 800,
             y: Math.random() * 600,
+            velocityX: 0,
+            velocityY: 0,
             size: 10,
             hasDelegation: false
         };

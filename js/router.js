@@ -87,22 +87,19 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListUnit = new DelegationList();
         this.delegationListUnit.url = this.baseUrl + '/delegation';
         this.delegationListUnitView = new DelegationListView({
-            collection: this.delegationListUnit,
-            'memberList': this.memberList
+            collection: this.delegationListUnit
         });
 
         this.delegationListArea = new DelegationList();
         this.delegationListArea.url = this.baseUrl + '/delegation';
         this.delegationListAreaView = new DelegationListView({
-            collection: this.delegationListArea,
-            'memberList': this.memberList
+            collection: this.delegationListArea
         });
 
         this.delegationListIssue = new DelegationList();
         this.delegationListIssue.url = this.baseUrl + '/delegation';
         this.delegationListIssueView = new DelegationListView({
-            collection: this.delegationListIssue,
-            'memberList': this.memberList
+            collection: this.delegationListIssue
         });
 
         this.delegationListUnit.fetch({
@@ -211,6 +208,10 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         //todo: move gameloop to..
         var self = this;
         this.intervalId = setInterval(function() {
+            self.memberList.updateVelocity();
+            self.delegationListUnit.updateVelocity();
+            self.delegationListArea.updateVelocity();
+            self.delegationListIssue.updateVelocity();
             self.memberList.updatePosition();
 
             $('canvas').clearCanvas();
@@ -218,7 +219,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
             self.delegationListUnitView.render();
             self.delegationListAreaView.render();
             self.delegationListIssueView.render();
-        }, (1000 / 60));
+        }, 1000 / 60);
     },
 
     start: function() {
