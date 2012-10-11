@@ -207,6 +207,18 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListAreaView.render();
         this.delegationListIssueView.render();
         //$('#canvas').html(this.memberListView.el);
+
+        //todo: move gameloop to..
+        var self = this;
+        this.intervalId = setInterval(function() {
+            self.memberList.updatePosition();
+
+            $('canvas').clearCanvas();
+            self.memberListView.render();
+            self.delegationListUnitView.render();
+            self.delegationListAreaView.render();
+            self.delegationListIssueView.render();
+        }, (1000 / 60));
     },
 
     start: function() {

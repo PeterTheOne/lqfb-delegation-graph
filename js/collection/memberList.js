@@ -5,5 +5,9 @@ window.MemberList = Backbone.Collection.extend({
 
     parse: function(resp, xhr) {
         return resp.result;
+    },
+
+    updatePosition: function() {
+
     }
 });
