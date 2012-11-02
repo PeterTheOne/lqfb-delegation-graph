@@ -43,8 +43,8 @@ window.MemberList = Backbone.Collection.extend({
             }
 
             //damping
-            member.set({velocityX: member.get('velocityX') * 0.7});
-            member.set({velocityY: member.get('velocityY') * 0.7});
+            member.set({velocityX: member.get('velocityX') * 0.8});
+            member.set({velocityY: member.get('velocityY') * 0.8});
 
             // add velocity to position
             var x = member.get('x') + member.get('velocityX');

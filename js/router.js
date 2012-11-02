@@ -10,7 +10,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
     },
 
     selectInstance: function() {
-        $('#content').html('<a href="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/9QPQjHjW4dcd23rSbN66">lqfb ppoe</a>');
+        $('#content').html('<a href="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/*key*">lqfb ppoe</a>');
     },
 
     selectScope: function(baseUrl, apiKey) {
@@ -140,7 +140,11 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListIssue.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (truster && trustee && truster.get('delegateCount') <= 0) {
+            if (!truster.get('locked') &&
+                    !trustee.get('locked') &&
+                    truster &&
+                    trustee &&
+                    truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
@@ -157,7 +161,11 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListArea.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (truster && trustee && truster.get('delegateCount') <= 0) {
+            if (!truster.get('locked') &&
+                    !trustee.get('locked') &&
+                    truster &&
+                    trustee &&
+                    truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
@@ -174,7 +182,11 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListUnit.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (truster && trustee && truster.get('delegateCount') <= 0) {
+            if (!truster.get('locked') &&
+                    !trustee.get('locked') &&
+                    truster &&
+                    trustee &&
+                    truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
 
@@ -187,17 +199,28 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
             }
         }, this);
 
-        //todo: fix remove
-        /*var list = this.memberList;
-        var i = 0;
-        this.memberList.forEach(function(member) {
-            //if (member.get('delegateCount') <= 0 && member.delegationCount() <= 0) {
-            console.log('i: ' + i++ + ', name: ' + member.get('name') + ', hasDelegation: ' + member.get('hasDelegation'));
-            if (!member.get('hasDelegation')) {
-                console.log('remove');
-                list.remove(member);
-            }
-        });*/
+        //todo: this removes about half of the members, this needs to be done more often...
+        var list = this.memberList;
+        var length;
+        do {
+            var length = this.memberList.length;
+            //console.log(this.memberList.length);
+            var i = 0;
+            this.memberList.forEach(function(member) {
+                //console.log('i: ' + i++ + ', name: ' + member.get('name') + ', hasDelegation: ' + member.get('hasDelegation'));
+                if (member.delegationCount() <= 0 && member.get('delegateCount') <= 0) {
+                    //console.log('remove');
+                    list.remove(member);
+                } else {
+                    // calculate size
+                    // todo: make delegationSize configureable
+                    var size = 10;
+                    size += member.delegationCount() * 2;
+                    member.set('size', size);
+                }
+            });
+            //console.log(this.memberList.length);
+        } while(length != this.memberList.length);
 
         this.memberListView.render();
         this.delegationListUnitView.render();

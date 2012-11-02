@@ -30,8 +30,9 @@ window.MemberView = Backbone.View.extend({
         } else {
             text = this.model.get('id');
         }
-        if (this.model.get('delegationCount') > 0) {
-            text += ' +' + this.model.get('delegationCount');
+        var delegationCount = this.model.delegationCount();
+        if (delegationCount > 0) {
+            text += ' +' + delegationCount;
         }
         $('canvas').drawText({
             fillStyle: "#000000",

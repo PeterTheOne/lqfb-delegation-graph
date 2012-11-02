@@ -3,6 +3,7 @@ window.Member = Backbone.Model.extend({
         return {
             trusters: new MemberList(),
             delegateCount: 0,
+            delegationCountCache: -1,
             //todo: make width and height setable
             x: Math.random() * 800,
             y: Math.random() * 600,
@@ -14,14 +15,16 @@ window.Member = Backbone.Model.extend({
     },
 
     delegationCount: function () {
-        return this.calcDelegationCount(this.id, 0);
+        if (this.get('delegationCountCache') == -1) {
+            this.set('delegationCountCache', this.calcDelegationCount(this.id, 0));
+        }
+        return this.get('delegationCountCache');
     },
 
     calcDelegationCount: function(id, depth) {
-        // todo: replace this recursion
+        var trusters = this.get('trusters');
 
-        //todo: fix this
-        if (!this.trusters) {
+        if (!trusters) {
             return 0;
         }
 
@@ -30,15 +33,10 @@ window.Member = Backbone.Model.extend({
             return -1;
         }
         var result = 0;
-        //this.collection.forEach(this.calcOneDelegationCount, this);
 
-        this.trusters.forEach(function(truster) {
+        trusters.forEach(function(truster) {
             result += truster.calcDelegationCount(id, depth + 1) + 1;
         }, this);
         return result;
     }
-
-    /*calcOneDelegationCount: function(member) {
-        this.result += value.calcDelegationCount(id, depth + 1) + 1;
-    }*/
 });
