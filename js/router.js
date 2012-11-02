@@ -140,10 +140,10 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListIssue.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (!truster.get('locked') &&
-                    !trustee.get('locked') &&
-                    truster &&
+            if (truster &&
                     trustee &&
+                    !truster.get('locked') &&
+                    !trustee.get('locked') &&
                     truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
@@ -161,10 +161,10 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListArea.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (!truster.get('locked') &&
-                    !trustee.get('locked') &&
-                    truster &&
+            if (truster &&
                     trustee &&
+                    !truster.get('locked') &&
+                    !trustee.get('locked') &&
                     truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
@@ -182,10 +182,10 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         this.delegationListUnit.forEach(function(delegation) {
             var truster = this.memberList.get(delegation.get('truster_id'));
             var trustee = this.memberList.get(delegation.get('trustee_id'));
-            if (!truster.get('locked') &&
-                    !trustee.get('locked') &&
-                    truster &&
+            if (truster &&
                     trustee &&
+                    !truster.get('locked') &&
+                    !trustee.get('locked') &&
                     truster.get('delegateCount') <= 0) {
                 delegation.set({truster: truster});
                 delegation.set({trustee: trustee});
