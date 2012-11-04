@@ -29,3 +29,7 @@ div#canvas {
 canvas {
     border: 1px solid;
 }
+
+form {
+    display: inline;
+}

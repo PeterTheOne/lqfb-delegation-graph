@@ -10,11 +10,30 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
     },
 
     selectInstance: function() {
-        $('#content').html('<a href="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/*key*">lqfb ppoe</a>');
+        var form = $('<form action="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/*key*"></form>');
+        var apiKeyInput = $('<input class="apiKey" placeholder="apiKey" />');
+        var submitInput = $('<input type="submit" />');
+        form.html(apiKeyInput);
+        form.append(submitInput);
+
+
+        $('#content').html('<span>Piratenpartei Österreich:</span>');
+        $('#content').append(form);
+
+        $('#content .apiKey').keyup(function() {
+            form.attr('action', '#selectScope/http%3A%2F%2F88.198.24.116%3A25520/' + $(this).val());
+        });
     },
 
     selectScope: function(baseUrl, apiKey) {
         $('#content').html('<a href="#graphView/' + baseUrl + '/' + apiKey + '/' + 'unit' + '/' + '1' + '">unit 1</a>');
+
+
+        /*$.get('template/scope.html', function(template) {
+            $('#content').html(template);
+        });*/
+
+
     },
 
     graphView: function(baseUrl, apiKey, scope, scopeId) {
