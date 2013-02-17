@@ -10,7 +10,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
     },
 
     selectInstance: function() {
-        var form = $('<form action="#selectScope/http%3A%2F%2F88.198.24.116%3A25520/*key*"></form>');
+        var form = $('<form action="#selectScope/https%3A%2F%2Flfapi.piratenpartei.at/*key*"></form>');
         var apiKeyInput = $('<input class="apiKey" placeholder="apiKey" />');
         var submitInput = $('<input type="submit" />');
         form.html(apiKeyInput);
@@ -21,7 +21,7 @@ window.lqfbDelegationGraph = new (Backbone.Router.extend({
         $('#content').append(form);
 
         $('#content .apiKey').keyup(function() {
-            form.attr('action', '#selectScope/http%3A%2F%2F88.198.24.116%3A25520/' + $(this).val());
+            form.attr('action', '#selectScope/https%3A%2F%2Flfapi.piratenpartei.at/' + $(this).val());
         });
     },
 
